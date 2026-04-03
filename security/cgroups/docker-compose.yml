@@ -1,5 +1,5 @@
 services:
-  limited_alpine_example:
+  limited_busybox:
     image: busybox
     command: ["sh", "-c", "while true; do sleep 1; done"] # Keeps the container running
     # Configuring limits
