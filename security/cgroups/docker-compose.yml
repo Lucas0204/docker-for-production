@@ -1,0 +1,29 @@
+services:
+  limited_alpine_example:
+    image: busybox
+    command: ["sh", "-c", "while true; do sleep 1; done"] # Keeps the container running
+    # Configuring limits
+    deploy:
+      resources:
+        limits:
+          cpus: "1.5"     # Limit until 1.5 CPU cores
+          memory: 512M    # Limit until 512 MB of RAM
+        reservations:
+          cpus: "0.5"     # Minimum reserve 0.5 CPU cores
+          memory: 256M    # Minimum reserve 256 MB
+
+    # Additional limits (using cgroups directly)
+    memswap_limit: 1g   # RAM + swap
+    cpu_shares: 512     # CPU priority (default is 1024, lower means less priority)
+
+    # https://docs.docker.com/reference/compose-file/services/#blkio_config
+    # Disk limits (blkio)
+    blkio_config:
+      weight: 300       # I/O priority (default is 500 max 1000, lower means less priority)
+      # Read / write limits (in bytes per second)
+      device_read_bps:
+        - path: /dev/sdb
+          rate: '12mb'
+      device_write_bps:
+        - path: /dev/sdb
+          rate: "1024k"
